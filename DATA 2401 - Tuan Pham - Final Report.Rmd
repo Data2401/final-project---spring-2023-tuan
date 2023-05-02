@@ -35,6 +35,7 @@ knitr::opts_chunk$set(echo = TRUE)
 >_"If you look at the number of Americans killed since 9/11 by terrorism, it's less than 100. If you look at the number been killed by gun violence, it's in the tens of thousands."_
 
 <br>
+
 ```{r echo=FALSE, out.width='50%', fig.align='center'}
 knitr::include_graphics('barack-obama3.jpg')
 
@@ -83,7 +84,6 @@ knitr::include_graphics('barack-obama3.jpg')
 - The time span is from 1960 to 2022. This is the supplemental data for my main data frame.
 
   
-
 
 ## DATA (cont.)
 
@@ -165,7 +165,7 @@ library(tidyverse)
 
 - All the data type was character, even with numeric variables' types
 
-- There is a limitation in term of data information about the observations of `location` variable in the raw data. Most of the Nightlife observations like Bar/Club/Restaurants was classified as `Other`, which make the original data had a big chunk of number in `Other` category.
+- There is a limitation in term of data information about the observations of `location` variable in the raw data. Most of the Nightlife observations like Bar/Club/Restaurants was classified as `Other`, which make the original data having a large quantity of observations in `Other` category.
 
 
 ```{r Cleaning1, echo=TRUE, warning=FALSE}
@@ -458,7 +458,7 @@ my_data %>%
 
                     
 - The preferred weapons was used by the mass shooter are Semi-Auto Handgun, Semi-Auto Rifle or both of them.
-- Light weight, high bullet rate, big magazines. It could help them cause mass casualties in a short period of time.
+- They are light weight, high bullet rate and big magazines. It could help the shooters cause mass casualties in a short period of time.
 
 ## Race and Mental Health Issues
 
@@ -519,7 +519,7 @@ knitr::include_graphics('Explanation-Age-of-Shooter-over-Time.jpg')
 ```
 
 
-+There are 3 things we can spot instinctively that
++There are 3 things we can spot instinctively that:
 
   - The right-hand side of the first zone and the third zone yield more dots than the whole bigger left-hand side one. Those zones are the least expected ages for the incidents to happen, but they still have more cases than its left-hand side ones.
 
@@ -535,6 +535,8 @@ knitr::include_graphics('Explanation-Age-of-Shooter-over-Time.jpg')
   - Sub-area 2: Most of people in this area got a career to follow, a family to take care of and some life's experiences. Health is at peak. Some of the conflicts at work might trigger their impulses, but in general they can hold it through.
   
   - Sub-area 3: In this age's range, an adult is mature in life both financially and mentally, even the health is in downturn. Kids got older, career is more stable. Anybody in this age got something to lose, so they normally do not do anything irrationally unless they got some mental health issues. That probably explains why there are no shooters without prior mental health in this range.
+
++ Zone II is the area where the incident occurs the most. Since this age’s range is the main force in the labor market, which explains why the mass shooting cases at the workplace appear to be the most.
 
 ## With Prior Mental Health Issues
 

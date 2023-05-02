@@ -196,6 +196,7 @@ my_data$gender[my_data$gender == 'F'] <- 'Female'
 ## What's The Mass Shooting?
 <br>
 > The FBI defines a "mass shooting" as any incidents in which at least four people are murdered with a gun. 
+
 <br>
 
 
@@ -301,6 +302,7 @@ my_data %>%
   arrange(desc(Count)) %>% 
   mutate(Ratio = 100 * Count/sum(Count))
 ```
+
 ### After 2002
 
 ```{r echo=FALSE}
@@ -486,7 +488,7 @@ The incidents in which the shooter had prior mental health issues have plotted a
 Now we take it off the plot to see how the original plot look like.
 
 
-```{r General Age Plot3, echo=FALSE, fig.height=6, fig.width=8, warning=FALSE}
+```{r General Age Plot3, echo=FALSE, fig.height=5, fig.width=8, warning=FALSE}
 p <- my_data %>%
   filter(!prior_signs_mental_health_issues == "Yes") %>% 
   ggplot(aes(x = year, y = age_of_shooter, color = gender, shape = prior_signs_mental_health_issues))
