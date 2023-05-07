@@ -3,9 +3,9 @@ title: "Data 2401 - Final Report"
 author: "Tuan Pham"
 date: "2023-04-26"
 output:
-  pdf_document: default
   html_document:
     df_print: paged
+  pdf_document: default
 ---
 
 
@@ -42,11 +42,11 @@ knitr::include_graphics('barack-obama3.jpg')
 ```
 
 
-<center>
+\begin{center}
 
 "The 44th US President - Barack Obama"
 
-</center>
+\end{center}
 
 <br>
 
@@ -115,6 +115,7 @@ my_data2 <- read.csv('Violence Project Mass Shooter Database - Version 6.1 - Ful
 library(dplyr)
 library(tidyverse)
 library(stringr)
+library(ggplot2)
 ```
 
 
@@ -236,24 +237,20 @@ my_data$gender[my_data$gender == 'F'] <- 'Female'
 ## A First Glance about the Incidents over Years
 
 
-```{r General, echo=FALSE}
+```{r General Plot, echo=FALSE, message=FALSE, warning=FALSE}
+library(plotly)
+
 hp <- my_data %>% 
   group_by(year) %>%
   summarize(Cases = n()) %>% 
   arrange(desc(.)) %>% 
-  mutate(Percentage = 100 * Cases/sum(Cases))
-
-```
-
-```{r General Plot, echo=FALSE, warning=FALSE}
-
-hp %>% ggplot(aes(x=year, y = Cases)) +
+  mutate(Percentage = 100 * Cases/sum(Cases)) %>% ggplot(aes(x=year, y = Cases)) +
   geom_histogram(stat = 'identity', fill = 'yellow') +
   theme_dark() +
-  labs(title = 'Incidents over Time',
+  labs(title = 'Incidents over Year',
        x = 'Year',
-       y = 'Cases')
-
+       y = 'Cases') 
+ggplotly(hp)
 ```
 
 ## Data Summary
@@ -271,7 +268,7 @@ my_data %>%
 ```{r Vegas 604, echo=FALSE}
 my_data %>%
   filter(total_victims == 604) %>% 
-  select(Case = case,Fatality =  fatalities, Injured = injured, Victims = total_victims, City = city, State = state, Date = date, Age = age_of_shooter, Race = race, Gender = gender, Weapons = weapon_type)
+  select(Case = case, Victims = total_victims, Fatality =  fatalities, Injured = injured, City = city, State = state, Date = date, Age = age_of_shooter, Race = race, Gender = gender, Weapons = weapon_type)
 ```
 
 
@@ -382,8 +379,7 @@ my_data %>%
   filter(!gender == 'Male & Female') %>% 
   ggplot(aes(x = age_of_shooter, fill = gender)) + geom_density(alpha = 0.5) +
   facet_wrap(~gender)+
-  labs(title = 'Gender and Age of the Shooter',
-       x = 'Age of the Shooter',
+  labs(x = 'Age of the Shooter',
        y = 'Density',
        fill = 'Gender')
 ```
@@ -399,7 +395,7 @@ my_data %>%
 
 
 ```{r Location Occurs, echo=FALSE, warning=FALSE}
-my_data %>% 
+lp <- my_data %>% 
   group_by(location) %>% 
   summarise(Count = n()) %>%
   mutate(Percentage = 100 * Count/sum(Count)) %>% 
@@ -409,6 +405,7 @@ my_data %>%
   labs(title = 'Most Frequent Places',
           x = 'Location',
           y = 'Frequency')
+ggplotly(lp)
 ```
 
 ```{r eval=FALSE, include=FALSE}
@@ -463,16 +460,16 @@ my_data %>%
 ## Race and Mental Health Issues
 
 ```{r Race n Mental , echo=FALSE, fig.height=5, fig.width=8, warning=FALSE}
-p <- my_data %>%
+mhp <- my_data %>%
   filter(!race == '-') %>%
   filter(!prior_signs_mental_health_issues == '-') %>%
-  ggplot(aes(x = race, fill = prior_signs_mental_health_issues))
-p + geom_histogram(stat = 'count', position = 'stack') +
+  ggplot(aes(x = race, fill = prior_signs_mental_health_issues)) +
+  geom_histogram(stat = 'count', position = 'stack') +
   labs(title = 'Race and Prior Signs of Mental Health Issues',
        x = 'Race',
        y = 'Cases',
        fill = 'Prior Signs of Mental Health Issues')
-
+ggplotly(mhp)
 ```
 
 |Race                       |Prior Mental Health Issues     |
@@ -483,36 +480,25 @@ p + geom_histogram(stat = 'count', position = 'stack') +
 |Black                      |             43%               |
 
 
-```{r eval=FALSE, include=FALSE}
-my_data%>%
-  filter(!race == '-') %>%
-  filter(!prior_signs_mental_health_issues == '-') %>%
-  group_by(race, prior_signs_mental_health_issues) %>%
-  summarise(Count = n()) %>% 
-  arrange(desc(Count)) %>% 
-  mutate(Percentage = 100 * Count/sum(Count))
-  
-```
-
-
 ## Will The Shooter's Age Be Related over Time?
 
 
 ```{r General Age Plot, echo=FALSE, fig.height=6, fig.width=6, warning=FALSE}
+
+library(plotly)
+
 p <- my_data %>%
-  ggplot(aes(x = year, y = age_of_shooter, color = gender))
-p + geom_point() + labs(title = 'Age of The Shooters over Time',
+  ggplot(aes(x = year, y = age_of_shooter, color = gender)) +
+  geom_point() + labs(title = 'Age of The Shooters over Time',
                         x = 'Year',
                         y = 'Age of the Shooters',
                         color ='Gender',
-                        shape = 'Prior Signs of Mental Health Issues') +
-  geom_vline(xintercept = 2002) +
-  geom_hline(yintercept = 18, size = 2, color = 'Red') +
-  geom_hline(yintercept = 28) +
-  geom_hline(yintercept = 38) +
-  geom_hline(yintercept = 50, size = 2, color = 'Red')
-```
+                        shape = 'Prior Signs of Mental Health Issues') 
 
+ggplotly(p)
+
+```
+At the first glance, we are not able to say anything about the relationships between the ages of the shooters over the time. Hence I decide to divide the graph into the zone and sub-areas like the graph below. 
 
 ```{r echo=FALSE, out.width='75%'}
 knitr::include_graphics('Explanation-Age-of-Shooter-over-Time.jpg')
@@ -540,10 +526,12 @@ knitr::include_graphics('Explanation-Age-of-Shooter-over-Time.jpg')
 
 ## With Prior Mental Health Issues
 
+Now, the shooters with the signs of the prior mental issues will be added to the graph.
+
 ```{r General Age Plot2, echo=FALSE, fig.height=6, fig.width=8, warning=FALSE}
-p <- my_data %>%
+pp <- my_data %>%
   ggplot(aes(x = year, y = age_of_shooter, color = gender, shape = prior_signs_mental_health_issues))
-p + geom_point() + labs(title = 'Age of The Shooters over Time',
+pp + geom_point() + labs(title = 'Age of The Shooters over Time',
                         x = 'Year',
                         y = 'Age of the Shooters',
                         color ='Gender',
@@ -559,7 +547,7 @@ The incidents in which the shooter had prior mental health issues have plotted a
 
 ## Without Prior Mental Health Issues Plot
 
-Now we take it off the plot to see how the original plot looks like.
+Now we take those cases out of the plot to see how the current plot looks like.
 
 ```{r General Age Plot3, echo=FALSE, fig.height=5, fig.width=7, warning=FALSE}
 p <- my_data %>%
@@ -611,13 +599,13 @@ People always argued about either we should do the background check or adjust th
 ##
 
 ```{r Age n Mental , echo=FALSE, warning=FALSE}
-p <- my_data %>%
+amp <- my_data %>%
   filter(!race == '-') %>%
   filter(!prior_signs_mental_health_issues == '-') %>%
   filter(!prior_signs_mental_health_issues == 'TBD') %>% 
   filter(!prior_signs_mental_health_issues == 'Unclear') %>% 
   ggplot(aes(x = age_of_shooter, fill = prior_signs_mental_health_issues))
-p + geom_density(alpha = .5) +
+amp + geom_density(alpha = .5) +
   facet_wrap(~ prior_signs_mental_health_issues) +
   labs(title = 'Age of the Shooter and Prior Mental Health Issues',
        x = 'Age of the Shooter',
@@ -649,15 +637,16 @@ map_plot <-  ggplot(states_map, aes(long, lat)) +
   geom_polygon(aes(group = group), fill = 'white', color = 'grey60') +
   geom_point(data = my_data_notHInAL, 
              aes(x = longitude, y = latitude, 
-                 size = total_victims, color = 'Orange')) +
+                 size = total_victims, color = fatalities)) +
  coord_map('albers', lat0 = 45.5, lat1 = 29.5) +
   labs(title = 'Geography Location of the Incidents',
        x = NULL,
        y = NULL,
        size = 'Total Victims',
-       color = NULL)
+       fill = 'Total Fatalities',
+       color = 'Total Fatalities')
   
-map_plot
+ggplotly(map_plot)
 ```
 
 The graph shows us an idea that the incidents most likely occurs over the East and West side of the country, and the Mid-west is least likely to happen the mass shootings.
@@ -706,7 +695,7 @@ bp %>% ggplot(aes(x = reorder(day_of_week, Percentage), y = Percentage)) +
 ```
 
 ```{r echo=FALSE}
-my_data %>% 
+fp <- my_data %>% 
   select(day_of_week,fatalities) %>% 
   group_by(day_of_week) %>% 
   summarise(Total_Fatalities = sum(fatalities)) %>% 
@@ -716,7 +705,7 @@ my_data %>%
   labs(title = 'Deadliest Day of the Week by Mass Shooting',
        x = 'Day of the Week',
        y = 'Total Fatalities')
-
+ggplotly(fp)
 ```
 
 Sunday is the deadliest day of the week in term of Mass Shooting but Monday is the most likely day for the Mass Shooter plan to act.
